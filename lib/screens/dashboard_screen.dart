@@ -46,6 +46,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   int _selectedIndex = 0;
 
   final Map<String, Widget> drawerScreenMap = {
+    'About Us': const AboutUsScreen(),
     'Family Registration': const FamilyRegistrationScreen(),
     'Directory Who\'s & Who': const DirectoryScreen(),
     'Blood Group & Donors': const BloodGroupScreen(),
@@ -56,7 +57,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     'Offers & Discounts': const OffersScreen(),
     'Payment Gateway': const PaymentScreen(),
     'Contact Us': const ContactUsScreen(),
-    'About Us': const AboutUsScreen(),
     'Terms & Conditions': const TermsScreen(),
   };
 
@@ -72,7 +72,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title:_selectedIndex==0?"Varshney Vaishy Samaj": _bottomTitles[_selectedIndex]),
+      appBar: CustomAppBar(title:_selectedIndex==0?"V V S": _bottomTitles[_selectedIndex]),
       drawer: CustomDrawer(screenMap: drawerScreenMap, onTap: _onDrawerTap),
       body: _bottomScreens[_selectedIndex],
       bottomNavigationBar: CustomBottomNav(

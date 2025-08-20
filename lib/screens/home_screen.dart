@@ -12,7 +12,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final PageController _pageController = PageController();
   final List<Map<String, String>> _slides = [
-    {'title': 'Welcome to V.V. Samaj', 'subtitle': 'संस्कार • एकता • सेवा'},
+    {'title': 'Welcome to V.V.S', 'subtitle': 'संस्कार • एकता • सेवा'},
     {'title': 'Connect. Share. Grow.', 'subtitle': ''},
     {'title': 'Empowering Our Community', 'subtitle': 'Together, we thrive.'},
   ];
