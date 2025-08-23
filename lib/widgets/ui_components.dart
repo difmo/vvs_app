@@ -6,7 +6,12 @@ class AppTitle extends StatelessWidget {
   final String text;
   final Color color;
   final int size;
-  const AppTitle(this.text, {super.key, this.color = AppColors.primary, this.size = 24});
+  const AppTitle(
+    this.text, {
+    super.key,
+    this.color = AppColors.primary,
+    this.size = 16,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -103,7 +108,10 @@ class AppInput extends StatelessWidget {
         prefixIcon: prefixIcon != null ? Icon(prefixIcon, size: 22) : null,
         filled: true,
         fillColor: Colors.white,
-        contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 14),
+        contentPadding: const EdgeInsets.symmetric(
+          vertical: 16,
+          horizontal: 14,
+        ),
         border: OutlineInputBorder(
           borderRadius: borderRadius,
           borderSide: const BorderSide(color: AppColors.border, width: 1.0),
@@ -147,7 +155,11 @@ class AppButton extends StatelessWidget {
 class AppOutlinedButton extends StatelessWidget {
   final String text;
   final VoidCallback onPressed;
-  const AppOutlinedButton({super.key, required this.text, required this.onPressed});
+  const AppOutlinedButton({
+    super.key,
+    required this.text,
+    required this.onPressed,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -164,6 +176,7 @@ class AppOutlinedButton extends StatelessWidget {
     );
   }
 }
+
 /// Text Button / Link
 class AppTextButton extends StatelessWidget {
   final String text;

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:vvs_app/screens/child_screens/family_registration_screen.dart';
+import 'package:vvs_app/widgets/bottom_footer.dart';
 import '../../theme/app_colors.dart';
 import '../../widgets/ui_components.dart';
 
@@ -12,13 +14,14 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final PageController _pageController = PageController();
   final List<Map<String, String>> _slides = [
-    {'title': 'Welcome to V.V.S', 'subtitle': 'संस्कार • एकता • सेवा'},
+    {'title': 'Welcome to VVS', 'subtitle': 'संस्कार • एकता • सेवा'},
     {'title': 'Connect. Share. Grow.', 'subtitle': ''},
-    {'title': 'Empowering Our Community', 'subtitle': 'Together, we thrive.'},
+    {
+      'title': 'Empowering our Varshney Samaj',
+      'subtitle': 'Together, we thrive.',
+    },
   ];
-
   int _currentPage = 0;
-
   Widget _buildPageIndicator() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -82,15 +85,15 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
 
           const SizedBox(height: 24),
-
           // CTA Highlight
           _buildHighlightCTA(
             title: 'Did You Register Your Family?',
             subtitle: 'Keep your family connected and searchable.',
             buttonText: 'Register Now',
-            onPressed: () {},
+            onPressed: () {
+              _navigateToAddMember();
+            },
           ),
-
           const SizedBox(height: 24),
 
           // News
@@ -128,8 +131,16 @@ class _HomeScreenState extends State<HomeScreen> {
               AppOutlinedButton(text: 'Offers & Discounts', onPressed: () {}),
             ],
           ),
+          const BottomFooter(),
         ],
       ),
+    );
+  }
+
+  void _navigateToAddMember() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const FamilyRegistrationScreen()),
     );
   }
 

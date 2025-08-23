@@ -58,15 +58,15 @@ class _SplashScreenState extends State<SplashScreen>
             children: [
               Image.asset('assets/logo.png', width: 140, height: 140),
               const SizedBox(height: 32),
-              const AppTitle('VARSHNEY VAISHY SAMAJ'),
+              const AppTitle('WELCOME TO VVS'),
               const SizedBox(height: 14),
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 32),
-                child: AppSubTitle('संस्कार • एकता • सेवा'),
+                child: AppSubTitle('एकता • संस्कार • जन सेवा'),
               ),
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 32),
-                child: AppSubTitle('(Sanskars • Unity • Service)'),
+                child: AppSubTitle('(Unity • Values • Public Service)'),
               ),
             ],
           ),

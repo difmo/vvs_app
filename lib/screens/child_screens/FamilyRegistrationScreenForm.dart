@@ -1,28 +1,26 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:vvs_app/screens/login_screen.dart';
+import 'package:vvs_app/theme/app_colors.dart';
 import 'package:vvs_app/widgets/app_dropdown.dart';
-import 'package:vvs_app/widgets/bottom_footer.dart';
-import '../theme/app_colors.dart';
-import '../widgets/ui_components.dart';
-import '../services/auth_service.dart';
+import 'package:vvs_app/widgets/ui_components.dart';
 
-class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({super.key});
+class FamilyRegistrationScreenForm extends StatefulWidget {
+  const FamilyRegistrationScreenForm({super.key});
 
   @override
-  State<RegisterScreen> createState() => _RegisterScreenState();
+  State<FamilyRegistrationScreenForm> createState() =>
+      _FamilyRegistrationScreenFormState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
+class _FamilyRegistrationScreenFormState
+    extends State<FamilyRegistrationScreenForm> {
   final _formKey = GlobalKey<FormState>();
-  final AuthService _auth = AuthService();
 
-  final _firstNameController = TextEditingController();
-  final _middleNameController = TextEditingController();
-  final _lastNameController = TextEditingController();
+  final _nameController = TextEditingController();
+  final _relationController = TextEditingController();
+  final _ageController = TextEditingController();
   final _dobController = TextEditingController();
-  final _fatherHusbandNameController = TextEditingController();
   final _occupationController = TextEditingController();
   final _qualificationController = TextEditingController();
   final _professionController = TextEditingController();
@@ -31,33 +29,27 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _addressController = TextEditingController();
   final _bloodGroupController = TextEditingController();
   final _aadhaarNumberController = TextEditingController();
-  final _passwordController = TextEditingController();
 
   String? _selectedGender;
   String? _selectedMaritalStatus;
-
   final List<String> _genderOptions = ['Male', 'Female', 'Other'];
   final List<String> _maritalStatusOptions = [
     'Single',
     'Married',
-    'Divorced',
     'Widowed',
+    'Divorced',
   ];
 
   bool _loading = false;
-
-  void _submit() async {
+  Future<void> _saveMember() async {
     if (!_formKey.currentState!.validate()) return;
+    setState(() => _loading = true);
 
-    final userData = {
-      'name':
-          _firstNameController.text.trim() +
-          ' ' +
-          _middleNameController.text.trim() +
-          ' ' +
-          _lastNameController.text.trim(),
+    await FirebaseFirestore.instance.collection('family_members').add({
+      'name': _nameController.text.trim(),
+      'relation': _relationController.text.trim(),
+      'age': int.tryParse(_ageController.text.trim()) ?? 0,
       'dob': _dobController.text.trim(),
-      'fatherHusbandName': _fatherHusbandNameController.text.trim(),
       'gender': _selectedGender,
       'maritalStatus': _selectedMaritalStatus,
       'occupation': _occupationController.text.trim(),
@@ -69,102 +61,91 @@ class _RegisterScreenState extends State<RegisterScreen> {
       'bloodGroup': _bloodGroupController.text.trim(),
       'aadhaarNumber': _aadhaarNumberController.text.trim(),
       'createdAt': FieldValue.serverTimestamp(),
-       'role': 'user',
-    };
+      'createdBy': FirebaseAuth.instance.currentUser?.uid,
+    });
 
-    setState(() => _loading = true);
-    final error = await _auth.register(
-      email: _emailController.text.trim(),
-      password: _passwordController.text.trim(),
-      userData: userData,
-    );
     setState(() => _loading = false);
+    if (!mounted) return;
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Member saved')));
+    Navigator.pop(context);
+  }
 
-    if (error != null) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(error)));
-    } else {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Registration successful')));
-      Navigator.pop(context);
-    }
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _relationController.dispose();
+    _ageController.dispose();
+    _dobController.dispose();
+    _occupationController.dispose();
+    _qualificationController.dispose();
+    _professionController.dispose();
+    _emailController.dispose();
+    _mobileController.dispose();
+    _addressController.dispose();
+    _bloodGroupController.dispose();
+    _aadhaarNumberController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: AppBar(title: const Text('New User Registration')),
+      appBar: AppBar(title: const Text('Family Registration')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
         child: Form(
           key: _formKey,
           child: Column(
             children: [
-              const AppTitle('Join the VVS Network'),
-              const SizedBox(height: 8),
-              const AppSubTitle(
-                'Connect with your Varshney Samaj. Strengthen Our Roots.',
-              ),
-              const SizedBox(height: 24),
-
+              const AppTitle('Register a Family Member'),
+              const SizedBox(height: 16),
               AppInput(
-                controller: _firstNameController,
-                label: 'First Name',
+                controller: _nameController,
+                label: 'Full Name',
                 validator: (v) => v == null || v.isEmpty ? 'Required' : null,
               ),
               const SizedBox(height: 12),
               AppInput(
-                controller: _middleNameController,
-                label: 'Middle Name',
-                validator: (v) => v == null || v.isEmpty ? 'Required' : null,
-              ),
-              const SizedBox(height: 12),
-              AppInput(
-                controller: _lastNameController,
-                label: 'Last Name',
+                controller: _relationController,
+                label: 'Relation',
                 validator: (v) => v == null || v.isEmpty ? 'Required' : null,
               ),
               const SizedBox(height: 12),
               AppInput(
                 controller: _dobController,
-                label: 'DOB (dd/mm/yyyy)',
+                label: 'Date of Birth (dd/mm/yyyy)',
                 validator: (v) => v == null || v.isEmpty ? 'Required' : null,
               ),
               const SizedBox(height: 12),
               AppInput(
-                controller: _fatherHusbandNameController,
-                label: 'Father / Husband Name',
-                validator: (v) => v == null || v.isEmpty ? 'Required' : null,
+                controller: _ageController,
+                label: 'Age',
+                keyboardType: TextInputType.number,
+                validator: (v) => v == null || int.tryParse(v) == null
+                    ? 'Enter valid age'
+                    : null,
               ),
               const SizedBox(height: 12),
-
-              /// Gender Dropdown
               AppDropdown(
                 label: 'Gender',
                 items: _genderOptions,
                 value: _selectedGender,
                 onChanged: (val) => setState(() => _selectedGender = val),
-                validator: (val) =>
-                    val == null || val.isEmpty ? 'Required' : null,
+                validator: (v) => v == null || v.isEmpty ? 'Required' : null,
               ),
               const SizedBox(height: 12),
-
-              /// Marital Status Dropdown
               AppDropdown(
                 label: 'Marital Status',
                 items: _maritalStatusOptions,
                 value: _selectedMaritalStatus,
                 onChanged: (val) =>
                     setState(() => _selectedMaritalStatus = val),
-                validator: (val) =>
-                    val == null || val.isEmpty ? 'Required' : null,
+                validator: (v) => v == null || v.isEmpty ? 'Required' : null,
               ),
-
               const SizedBox(height: 12),
-
               AppInput(
                 controller: _occupationController,
                 label: 'Occupation',
@@ -180,12 +161,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
               AppInput(
                 controller: _professionController,
                 label: 'Profession',
-                validator: (v) => v == null || v.isEmpty ? 'Required' : null,
-              ),
-              const SizedBox(height: 12),
-              AppInput(
-                controller: _addressController,
-                label: 'Address',
                 validator: (v) => v == null || v.isEmpty ? 'Required' : null,
               ),
               const SizedBox(height: 12),
@@ -207,6 +182,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
               const SizedBox(height: 12),
               AppInput(
+                controller: _addressController,
+                label: 'Address',
+                validator: (v) => v == null || v.isEmpty ? 'Required' : null,
+              ),
+              const SizedBox(height: 12),
+              AppInput(
                 controller: _bloodGroupController,
                 label: 'Blood Group',
                 validator: (v) => v == null || v.isEmpty ? 'Required' : null,
@@ -217,35 +198,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 label: 'Aadhaar Number',
                 validator: (v) => v == null || v.isEmpty ? 'Required' : null,
               ),
-              const SizedBox(height: 12),
-              AppInput(
-                controller: _passwordController,
-                label: 'Password',
-                obscureText: true,
-                validator: (v) =>
-                    v != null && v.length >= 6 ? null : 'Minimum 6 characters',
-              ),
               const SizedBox(height: 24),
               _loading
                   ? const CircularProgressIndicator()
-                  : AppButton(text: 'SUBMIT', onPressed: _submit),
-              const SizedBox(height: 8),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  AppLabel('Already have an account?'),
-                  AppTextButton(
-                    text: 'SIGN IN',
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => const LoginScreen()),
-                      );
-                    },
-                  ),
-                ],
-              ),
-              const BottomFooter(),
+                  : AppButton(text: 'SAVE', onPressed: _saveMember),
             ],
           ),
         ),

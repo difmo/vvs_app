@@ -56,7 +56,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 children: [
                   Image.asset('assets/logo.png', width: 120, height: 120),
                   const SizedBox(height: 24),
-                  const AppTitle('Welcome to V.V.S'),
+                  const AppTitle('Welcome to VVS'),
                   const SizedBox(height: 8),
                   const AppSubTitle('संस्कार • एकता • सेवा'),
                   const SizedBox(height: 24),

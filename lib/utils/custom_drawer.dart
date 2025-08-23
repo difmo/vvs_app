@@ -1,12 +1,49 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:vvs_app/screens/login_screen.dart';
+import 'package:vvs_app/widgets/bottom_footer.dart';
 import '../theme/app_colors.dart';
 import '../widgets/ui_components.dart';
 
-class CustomDrawer extends StatelessWidget {
+class CustomDrawer extends StatefulWidget {
   final Map<String, Widget> screenMap;
   final void Function(Widget) onTap;
 
   const CustomDrawer({super.key, required this.screenMap, required this.onTap});
+
+  @override
+  State<CustomDrawer> createState() => _CustomDrawerState();
+}
+
+class _CustomDrawerState extends State<CustomDrawer> {
+  String displayName = 'Guest User';
+  String email = 'Not signed in';
+  String? photoUrl;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserProfile();
+  }
+
+  Future<void> _loadUserProfile() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final doc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
+      final data = doc.data();
+      if (data != null) {
+        setState(() {
+          displayName = data['name'] ?? user.displayName ?? 'Guest User';
+          email = data['email'] ?? user.email ?? 'Not signed in';
+          photoUrl = data['photoUrl'] ?? user.photoURL;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,22 +68,28 @@ class CustomDrawer extends StatelessWidget {
                     color: Colors.white.withOpacity(0.2),
                     border: Border.all(color: Colors.white, width: 1.5),
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Image.asset(
-                      'assets/logo.png',
-                      width: 24,
-                      height: 24,
-                    ),
-                  ),
+                  child: photoUrl != null
+                      ? ClipOval(
+                          child: Image.network(
+                            photoUrl!,
+                            width: 48,
+                            height: 48,
+                            fit: BoxFit.cover,
+                          ),
+                        )
+                      : const Icon(
+                          Icons.account_circle,
+                          size: 48,
+                          color: Colors.white,
+                        ),
                 ),
                 const SizedBox(width: 16),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
-                    AppLabel('John Varshney', color: Colors.white),
-                    SizedBox(height: 4),
-                    AppSubTitle('john.vvs@example.com', color: Colors.white70),
+                  children: [
+                    AppLabel(displayName, color: Colors.white),
+                    const SizedBox(height: 4),
+                    AppSubTitle(email, color: Colors.white70),
                   ],
                 ),
               ],
@@ -55,17 +98,17 @@ class CustomDrawer extends StatelessWidget {
           Expanded(
             child: ListView.separated(
               padding: const EdgeInsets.symmetric(vertical: 8),
-              itemCount: screenMap.length,
+              itemCount: widget.screenMap.length,
               itemBuilder: (context, index) {
-                final title = screenMap.keys.elementAt(index);
-                final screen = screenMap.values.elementAt(index);
+                final title = widget.screenMap.keys.elementAt(index);
+                final screen = widget.screenMap.values.elementAt(index);
                 return ListTile(
                   leading: const Icon(
                     Icons.chevron_right_rounded,
                     color: AppColors.primary,
                   ),
                   title: AppLabel(title),
-                  onTap: () => onTap(screen),
+                  onTap: () => widget.onTap(screen),
                 );
               },
               separatorBuilder: (_, __) => const Divider(
@@ -75,13 +118,21 @@ class CustomDrawer extends StatelessWidget {
               ),
             ),
           ),
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 14),
-            child: AppSubTitle(
-              'Powered by V.V. Samaj',
-              color: AppColors.accent,
+          ListTile(
+            leading: const Icon(
+              Icons.chevron_right_rounded,
+              color: AppColors.primary,
             ),
+            title: AppLabel("Logout"),
+            onTap: () async {
+              await FirebaseAuth.instance.signOut();
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (_) => const LoginScreen()),
+              );
+            },
           ),
+          const BottomFooter(),
         ],
       ),
     );
