@@ -24,7 +24,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       child: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: AppTitle(title,color: Colors.white,size: 18,),
+        title: AppTitle(title, color: Colors.white, size: 18),
         centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.menu),
@@ -37,7 +37,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               color: Colors.white.withOpacity(0.2),
               border: Border.all(color: Colors.white, width: 1.5),
             ),
-            child: Image.asset('assets/logo.png', width: 32, height: 32),
+            child: Image.asset('assets/logo.png', width: 48, height: 48),
           ),
           const SizedBox(width: 16),
         ],

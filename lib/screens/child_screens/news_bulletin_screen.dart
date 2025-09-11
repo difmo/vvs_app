@@ -11,13 +11,12 @@ class NewsBulletinScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return const Center(child: Text('Not logged in'));
-
     final userRef = FirebaseFirestore.instance
         .collection('users')
         .doc(user.uid);
-
     return StreamBuilder<DocumentSnapshot>(
       stream: userRef.snapshots(),
       builder: (context, snapshot) {
@@ -32,12 +31,6 @@ class NewsBulletinScreen extends StatelessWidget {
 
         return Scaffold(
           body: Container(
-            // margin: EdgeInsets.only(
-            //   top: 16,
-            //   left: 0,
-            //   right: 0,
-            //   bottom: isAdmin ? 80 : 0,
-            // ),
             child: StreamBuilder<QuerySnapshot>(
               stream: FirebaseFirestore.instance
                   .collection('news')

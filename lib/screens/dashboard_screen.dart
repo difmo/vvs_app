@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vvs_app/screens/child_screens/founder_screen.dart';
 import 'package:vvs_app/screens/home_screen.dart';
 import 'package:vvs_app/screens/profile_screen.dart';
 import 'package:vvs_app/screens/child_screens/news_bulletin_screen.dart';
@@ -47,6 +48,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   final Map<String, Widget> drawerScreenMap = {
     'About Us': const AboutUsScreen(),
+    'Founder': const FounderScreen(),
     'Family Registration': const FamilyRegistrationScreen(),
     'Directory Who\'s & Who': const DirectoryScreen(),
     'Blood Group & Donors': const BloodDonorsScreen(),

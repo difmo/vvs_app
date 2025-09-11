@@ -41,7 +41,7 @@ class AppSubTitle extends StatelessWidget {
       style: TextStyle(
         fontSize: 15,
         fontStyle: FontStyle.italic,
-        fontWeight: FontWeight.w400,
+        fontWeight: FontWeight.w700,
         color: color,
         height: 1.5,
         letterSpacing: 0.2,

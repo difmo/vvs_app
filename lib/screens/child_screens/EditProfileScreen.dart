@@ -35,7 +35,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   Future<void> _loadUserData() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
-    final doc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
+    final doc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .get();
     final d = doc.data();
     if (d != null) {
       _nameC.text = d['name'] ?? '';
@@ -50,7 +53,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   Future<void> _pickImage() async {
-    final picked = await ImagePicker().pickImage(source: ImageSource.gallery, imageQuality: 80);
+    final picked = await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 80,
+    );
     if (picked != null) {
       setState(() => _imageFile = File(picked.path));
     }
@@ -59,7 +65,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   Future<String?> _uploadProfileImage(String uid) async {
     if (_imageFile == null) return _photoUrl;
     try {
-      final ref = FirebaseStorage.instance.ref().child('profile_images/$uid.jpg');
+      final ref = FirebaseStorage.instance.ref().child(
+        'profile_images/$uid.jpg',
+      );
       final snapshot = await ref.putFile(_imageFile!);
       return await snapshot.ref.getDownloadURL();
     } catch (e) {
@@ -85,12 +93,17 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       if (imageUrl != null) 'photoUrl': imageUrl,
     };
 
-    await FirebaseFirestore.instance.collection('users').doc(user.uid).update(updates);
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .update(updates);
 
     setState(() => _loading = false);
     if (!mounted) return;
 
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Profile updated!')));
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Profile updated!')));
     Navigator.pop(context);
   }
 
@@ -122,11 +135,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   backgroundColor: AppColors.primary.withOpacity(0.2),
                   backgroundImage: _imageFile != null
                       ? FileImage(_imageFile!)
-                      : (_photoUrl != null
-                          ? NetworkImage(_photoUrl!)
-                          : null) as ImageProvider<Object>?,
+                      : (_photoUrl != null ? NetworkImage(_photoUrl!) : null)
+                            as ImageProvider<Object>?,
                   child: (_imageFile == null && _photoUrl == null)
-                      ? const Icon(Icons.camera_alt, size: 40, color: Colors.white)
+                      ? const Icon(
+                          Icons.camera_alt,
+                          size: 40,
+                          color: Colors.white,
+                        )
                       : null,
                 ),
               ),
@@ -141,7 +157,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 controller: _mobileC,
                 label: 'Mobile',
                 keyboardType: TextInputType.phone,
-                validator: (v) => v != null && v.length == 10 ? null : 'Invalid number',
+                validator: (v) =>
+                    v != null && v.length == 10 ? null : 'Invalid number',
               ),
               const SizedBox(height: 12),
               AppInput(controller: _addressC, label: 'Address'),

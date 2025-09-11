@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -11,7 +12,11 @@ class ProductPostScreen extends StatefulWidget {
   final Map<String, dynamic> existingData;
   final String docId;
 
-  const ProductPostScreen({super.key, required this.existingData, required this.docId});
+  const ProductPostScreen({
+    super.key,
+    required this.existingData,
+    required this.docId,
+  });
 
   @override
   State<ProductPostScreen> createState() => _ProductPostScreenState();
@@ -24,7 +29,7 @@ class _ProductPostScreenState extends State<ProductPostScreen> {
   final TextEditingController _priceController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
 
-  String _imageUrl = 'https://fiverr-res.cloudinary.com/images/t_main1,q_auto,f_auto,q_auto,f_auto/gigs/263409119/original/1b41a9535ca0dd1e44c6c90ecd4606bdeb5cfa8f/do-amazon-infographics-and-product-photography-editing.jpg';
+  String _imageUrl = '';
   bool _loading = false;
 
   @override
@@ -48,7 +53,9 @@ class _ProductPostScreenState extends State<ProductPostScreen> {
     final fileName = DateTime.now().millisecondsSinceEpoch.toString();
 
     try {
-      final ref = FirebaseStorage.instance.ref().child('product_images/$fileName.jpg');
+      final ref = FirebaseStorage.instance.ref().child(
+        'product_images/$fileName.jpg',
+      );
       await ref.putFile(file);
       final downloadUrl = await ref.getDownloadURL();
 
@@ -56,7 +63,7 @@ class _ProductPostScreenState extends State<ProductPostScreen> {
         _imageUrl = downloadUrl;
       });
     } catch (e) {
-       setState(() => _loading = false);
+      setState(() => _loading = false);
       // ScaffoldMessenger.of(context).showSnackBar(
       //   SnackBar(content: Text('Image upload failed: $e')),
       // );
@@ -67,41 +74,52 @@ class _ProductPostScreenState extends State<ProductPostScreen> {
 
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
-
     if (_imageUrl.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please upload an image')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Please upload an image')));
       return;
     }
-
     setState(() => _loading = true);
-
-    final product = {
-      'name': _nameController.text.trim(),
-      'price': double.tryParse(_priceController.text.trim()) ?? 0,
-      'description': _descriptionController.text.trim(),
-      'imageUrl': _imageUrl,
-      'createdAt': FieldValue.serverTimestamp(),
-    };
-
     final collection = FirebaseFirestore.instance.collection('marketplace');
-
+    DocumentReference? productRef;
     try {
       if (widget.docId.isEmpty) {
-        await collection.add(product);
+        productRef = await collection.add({
+          'name': _nameController.text.trim(),
+          'price': double.tryParse(_priceController.text.trim()) ?? 0,
+          'description': _descriptionController.text.trim(),
+          'imageUrl': _imageUrl,
+          'createdAt': FieldValue.serverTimestamp(),
+          'createdBy': FirebaseAuth.instance.currentUser?.uid,
+        });
+        // Set productId as reference id after creation
+        await productRef.update({'productId': productRef.id});
       } else {
-        await collection.doc(widget.docId).update(product);
+        productRef = collection.doc(widget.docId);
+        await productRef.update({
+          'name': _nameController.text.trim(),
+          'price': double.tryParse(_priceController.text.trim()) ?? 0,
+          'description': _descriptionController.text.trim(),
+          'imageUrl': _imageUrl,
+          'createdAt': FieldValue.serverTimestamp(),
+          'productId': widget.docId,
+          'createdBy': FirebaseAuth.instance.currentUser?.uid,
+        });
       }
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(widget.docId.isEmpty ? 'Product added!' : 'Product updated!')),
+        SnackBar(
+          content: Text(
+            widget.docId.isEmpty ? 'Product added!' : 'Product updated!',
+          ),
+        ),
       );
       Navigator.pop(context);
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error: $e')));
     } finally {
       setState(() => _loading = false);
     }
@@ -120,7 +138,7 @@ class _ProductPostScreenState extends State<ProductPostScreen> {
           key: _formKey,
           child: Column(
             children: [
-              AppTitle(title),
+              Row(children: [AppTitle(title)]),
               const SizedBox(height: 20),
               GestureDetector(
                 onTap: _pickAndUploadImage,

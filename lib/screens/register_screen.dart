@@ -103,6 +103,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           key: _formKey,
           child: Column(
             children: [
+              
               const AppTitle('Join the VVS Network'),
               const SizedBox(height: 8),
               const AppSubTitle(

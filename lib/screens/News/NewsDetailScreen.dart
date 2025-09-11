@@ -13,9 +13,20 @@ class NewsDetailScreen extends StatelessWidget {
     final content = newsData['content'] ?? '';
     final imageUrl = newsData['imageUrl'] ?? '';
     final timestamp = newsData['timestamp'];
-    final date = timestamp != null
-        ? DateFormat('MMMM dd, yyyy').format(timestamp.toDate())
-        : '';
+    String date = '';
+    if (timestamp != null) {
+      DateTime? dateTime;
+      if (timestamp is String) {
+        dateTime = DateTime.tryParse(timestamp);
+      } else if (timestamp is DateTime) {
+        dateTime = timestamp;
+      } else if (timestamp is dynamic && timestamp.toDate != null) {
+        dateTime = timestamp.toDate();
+      }
+      if (dateTime != null) {
+        date = DateFormat('MMMM dd, yyyy').format(dateTime);
+      }
+    }
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -30,13 +41,35 @@ class NewsDetailScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (imageUrl.isNotEmpty)
-              ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: Image.network(
-                  imageUrl,
-                  width: double.infinity,
-                  height: 220,
-                  fit: BoxFit.cover,
+              GestureDetector(
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (_) => Dialog(
+                      insetPadding: EdgeInsets.zero,
+                      backgroundColor: Colors.transparent,
+                      child: SizedBox.expand(
+                        child: GestureDetector(
+                          onTap: () => Navigator.of(context).pop(),
+                          child: InteractiveViewer(
+                            panEnabled: true,
+                            minScale: 1,
+                            maxScale: 4,
+                            child: Image.network(imageUrl, fit: BoxFit.contain),
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: Image.network(
+                    imageUrl,
+                    width: double.infinity,
+                    height: 220,
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
             const SizedBox(height: 16),

@@ -46,8 +46,8 @@ class ProfileScreen extends StatelessWidget {
                       ? ClipOval(
                           child: Image.network(
                             data['photoUrl']!,
-                            width: 64,
-                            height: 64,
+                            width: 96,
+                            height: 96,
                             fit: BoxFit.cover,
                           ),
                         )

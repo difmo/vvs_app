@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:vvs_app/constants/app_strings.dart';
 import 'package:vvs_app/screens/dashboard_screen.dart';
 import 'package:vvs_app/screens/login_screen.dart';
 import '../theme/app_colors.dart';
@@ -56,17 +57,18 @@ class _SplashScreenState extends State<SplashScreen>
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Image.asset('assets/logo.png', width: 140, height: 140),
+              Image.asset('assets/logo.png', width: 164, height: 164),
               const SizedBox(height: 32),
-              const AppTitle('WELCOME TO VVS'),
+              const AppTitle('VVS'),
+                const AppTitle('VARSHNEY VIKAS SANGATHAN'),
               const SizedBox(height: 14),
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 32),
-                child: AppSubTitle('एकता • संस्कार • जन सेवा'),
+                child: AppSubTitle(appTitle),
               ),
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 32),
-                child: AppSubTitle('(Unity • Values • Public Service)'),
+                child: AppSubTitle('$appSubtitle'),
               ),
             ],
           ),

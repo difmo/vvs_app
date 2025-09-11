@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vvs_app/constants/app_strings.dart';
 import 'package:vvs_app/theme/app_colors.dart';
 import 'package:vvs_app/widgets/ui_components.dart';
 
@@ -46,7 +47,7 @@ class AboutUsScreen extends StatelessWidget {
             AppTitle('Motto'),
             SizedBox(height: 8),
             Text(
-              'संस्कार • एकता • सेवा\nSanskars • Unity • Service',
+              '${appTitle}\n($appSubtitle)',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, height: 1.5),
             ),
             SizedBox(height: 24),

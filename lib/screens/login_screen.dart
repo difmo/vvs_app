@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vvs_app/constants/app_strings.dart';
 import '../theme/app_colors.dart';
 import '../widgets/ui_components.dart';
 import 'dashboard_screen.dart';
@@ -20,9 +21,18 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _passwordController = TextEditingController();
 
   bool _loading = false;
+  bool _acceptedTerms = false;
 
   void _login() async {
     if (!_formKey.currentState!.validate()) return;
+    if (!_acceptedTerms) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please accept Terms & Conditions to proceed.'),
+        ),
+      );
+      return;
+    }
 
     setState(() => _loading = true);
     final error = await _auth.login(
@@ -32,7 +42,9 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() => _loading = false);
 
     if (error != null) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error)));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(error)));
     } else {
       Navigator.pushReplacement(
         context,
@@ -41,68 +53,166 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  void _forgotPassword() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Forgot Password feature is not implemented yet.'),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
       body: Center(
         child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Image.asset('assets/logo.png', width: 120, height: 120),
-                  const SizedBox(height: 24),
-                  const AppTitle('Welcome to VVS'),
-                  const SizedBox(height: 8),
-                  const AppSubTitle('संस्कार • एकता • सेवा'),
-                  const SizedBox(height: 24),
-                  AppInput(
-                    controller: _loginIdController,
-                    label: 'Login ID',
-                    keyboardType: TextInputType.emailAddress,
-                    validator: (value) =>
-                        value == null || value.isEmpty ? 'Please enter Login ID' : null,
+          padding: const EdgeInsets.all(24),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Image.asset('assets/logo.png', width: 164, height: 164),
+                const SizedBox(height: 24),
+                const AppTitle('VVS'),
+                const AppTitle('VARSHNEY VIKAS SANGATHAN'),
+                const SizedBox(height: 8),
+                const AppSubTitle(appTitle),
+                const SizedBox(height: 24),
+                AppInput(
+                  controller: _loginIdController,
+                  label: 'EMAIL ID / MOBILE NUMBER',
+                  keyboardType: TextInputType.emailAddress,
+                  validator: (value) => value == null || value.isEmpty
+                      ? 'Please enter Login ID'
+                      : null,
+                ),
+                const SizedBox(height: 16),
+                AppInput(
+                  controller: _passwordController,
+                  label: 'Password',
+                  obscureText: true,
+                  validator: (value) => value == null || value.isEmpty
+                      ? 'Please enter Password'
+                      : null,
+                ),
+                const SizedBox(height: 8),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
+                    onPressed: _forgotPassword,
+                    child: const Text(
+                      'Forgot Password?',
+                      style: TextStyle(color: AppColors.primary),
+                    ),
                   ),
-                  const SizedBox(height: 16),
-                  AppInput(
-                    controller: _passwordController,
-                    label: 'Password',
-                    obscureText: true,
-                    validator: (value) =>
-                        value == null || value.isEmpty ? 'Please enter Password' : null,
-                  ),
-                  const SizedBox(height: 24),
-                  _loading
-                      ? const CircularProgressIndicator()
-                      : AppButton(text: 'LOGIN', onPressed: _login),
-                  const SizedBox(height: 16),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      AppLabel('New User?'),
-                      AppTextButton(
-                        text: 'CREATE NEW ACCOUNT',
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => const RegisterScreen(),
+                ),
+                Row(
+                  children: [
+                    Checkbox(
+                      value: _acceptedTerms,
+                      activeColor: AppColors.primary,
+                      onChanged: (value) {
+                        setState(() => _acceptedTerms = value ?? false);
+                      },
+                    ),
+                    Expanded(
+                      child: RichText(
+                        text: TextSpan(
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: Colors.black,
+                          ),
+                          children: [
+                            const TextSpan(text: 'I accept '),
+                            WidgetSpan(
+                              child: GestureDetector(
+                                onTap: () {
+                                  launchUrlString(
+                                    'https://www.vvs.com/terms-conditions',
+                                  );
+                                },
+                                child: const Text(
+                                  'Terms & Conditions',
+                                  style: TextStyle(
+                                    color: AppColors.primary,
+                                    decoration: TextDecoration.underline,
+                                  ),
+                                ),
+                              ),
                             ),
-                          );
-                        },
+                            const TextSpan(text: ' and '),
+                            WidgetSpan(
+                              child: GestureDetector(
+                                onTap: () {
+                                  launchUrlString(
+                                    'https://www.vvs.com/privacy-policy',
+                                  );
+                                },
+                                child: const Text(
+                                  'Privacy Policy',
+                                  style: TextStyle(
+                                    color: AppColors.primary,
+                                    decoration: TextDecoration.underline,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const TextSpan(text: ' of VVS app'),
+                          ],
+                        ),
                       ),
-                    ],
-                  )
-                ],
-              ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                _loading
+                    ? const CircularProgressIndicator()
+                    : AppButton(
+                        text: 'LOGIN',
+                        onPressed: _acceptedTerms
+                            ? _login
+                            : () {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                      'Please accept Terms & Conditions to proceed.',
+                                    ),
+                                  ),
+                                );
+                              },
+                      ),
+                const SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    AppLabel('New User?'),
+                    AppTextButton(
+                      text: 'CREATE NEW ACCOUNT',
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const RegisterScreen(),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
         ),
       ),
+    );
+  }
+
+  void launchUrlString(String s) {
+    // launchUrl(Uri.parse(s));
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('We are working on that feature!')),
     );
   }
 }
