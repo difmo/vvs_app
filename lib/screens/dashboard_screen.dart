@@ -20,6 +20,9 @@ import 'package:vvs_app/screens/child_screens/terms_screen.dart';
 import 'package:vvs_app/utils/custom_app_bar.dart';
 import 'package:vvs_app/utils/custom_bottom_nav.dart';
 import 'package:vvs_app/utils/custom_drawer.dart';
+
+import 'child_screens/EditProfileScreen.dart';
+import 'child_screens/profile_page.dart';
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
 
@@ -47,19 +50,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
   int _selectedIndex = 0;
 
   final Map<String, Widget> drawerScreenMap = {
+    'Profile Page': const ProfilePage(),
     'About Us': const AboutUsScreen(),
     'Founder': const FounderScreen(),
     'Family Registration': const FamilyRegistrationScreen(),
     'Directory Who\'s & Who': const DirectoryScreen(),
     'Blood Group & Donors': const BloodDonorsScreen(),
-    'Health Care': const HealthCareScreen(),
-    'Education': const EducationScreen(),
+    'Health Care': const HealthcareMobileScreen(),
+    'Education': const EducationMobileScreen(),
     'Group Chat': const GroupChatScreen(),
-    'Upcoming Events': const EventsScreen(),
-    'Offers & Discounts': const OffersScreen(),
+    'Upcoming Events': const EventsPage(),
+    'Offers & Discounts': const OffersPage(),
     'Payment Gateway': const PaymentScreen(),
     'Contact Us': const ContactUsScreen(),
-    'Terms & Conditions': const TermsScreen(),
+    'Terms & Conditions': const TermsAndConditionsScreen(),
+
   };
 
   void _onBottomNavTap(int index) {

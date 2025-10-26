@@ -46,7 +46,9 @@ class DefaultFirebaseOptions {
     messagingSenderId: '1087273878944',
     projectId: 'vvsamajapp',
     authDomain: 'vvsamajapp.firebaseapp.com',
+    databaseURL: 'https://vvsamajapp-default-rtdb.firebaseio.com',
     storageBucket: 'vvsamajapp.firebasestorage.app',
+    measurementId: 'G-QG33Z25MVZ',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
@@ -54,6 +56,7 @@ class DefaultFirebaseOptions {
     appId: '1:1087273878944:android:1245068b6f2591ac0990c5',
     messagingSenderId: '1087273878944',
     projectId: 'vvsamajapp',
+    databaseURL: 'https://vvsamajapp-default-rtdb.firebaseio.com',
     storageBucket: 'vvsamajapp.firebasestorage.app',
   );
 
@@ -62,7 +65,10 @@ class DefaultFirebaseOptions {
     appId: '1:1087273878944:ios:bc2a4c8a7408a5b80990c5',
     messagingSenderId: '1087273878944',
     projectId: 'vvsamajapp',
+    databaseURL: 'https://vvsamajapp-default-rtdb.firebaseio.com',
     storageBucket: 'vvsamajapp.firebasestorage.app',
+    androidClientId: '1087273878944-i5cqtp13h1p886rn7rqaa67d7ijrtv8h.apps.googleusercontent.com',
+    iosClientId: '1087273878944-ihpppl7lkdattlsjfgemhesrdveg29s5.apps.googleusercontent.com',
     iosBundleId: 'com.example.vvsApp',
   );
 
@@ -71,7 +77,10 @@ class DefaultFirebaseOptions {
     appId: '1:1087273878944:ios:bc2a4c8a7408a5b80990c5',
     messagingSenderId: '1087273878944',
     projectId: 'vvsamajapp',
+    databaseURL: 'https://vvsamajapp-default-rtdb.firebaseio.com',
     storageBucket: 'vvsamajapp.firebasestorage.app',
+    androidClientId: '1087273878944-i5cqtp13h1p886rn7rqaa67d7ijrtv8h.apps.googleusercontent.com',
+    iosClientId: '1087273878944-ihpppl7lkdattlsjfgemhesrdveg29s5.apps.googleusercontent.com',
     iosBundleId: 'com.example.vvsApp',
   );
 
@@ -81,6 +90,9 @@ class DefaultFirebaseOptions {
     messagingSenderId: '1087273878944',
     projectId: 'vvsamajapp',
     authDomain: 'vvsamajapp.firebaseapp.com',
+    databaseURL: 'https://vvsamajapp-default-rtdb.firebaseio.com',
     storageBucket: 'vvsamajapp.firebasestorage.app',
+    measurementId: 'G-JWJ9LMKD30',
   );
+
 }
